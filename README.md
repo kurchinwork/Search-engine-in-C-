@@ -1,4 +1,4 @@
-# Hello
+# I'm Ilya K and
 This repository was created for working with the final project files for 
 the **"C++ Developer from Scratch"** course on the *SkillBox* platform. 
 
