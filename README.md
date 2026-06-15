@@ -10,6 +10,5 @@ Course module repository:
 - C++
 - CMake
 - JSON File
-- Qt
 
 My contact information is in my profile.
