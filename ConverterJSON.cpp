@@ -38,7 +38,16 @@ vector<string>GetTextDocuments() {
     return containFile;
 }
 
-//Метод определения максимального количества ответов на запрос
+/** 1 Написать методы
+ *  vector<string>GetTextDocuments() {}
+ *  int GetResponsesLimit(){}
+ *  void putAnswers(std::vector<std::vector<std::pair<int,float>>>answers) {}
+ *
+ *  Подключить Unit тестирование через Gtest
+ *
+ */
+
+//Метод определения максимального количества ответов на запрос (готов)
 int GetResponsesLimit()
 {
     ifstream JSON_file ("config.json");
@@ -53,10 +62,16 @@ int GetResponsesLimit()
         JSON_file >> config_json;
         JSON_file.close();
 
-        if (config_json.contains("config") && config_json["config"].contains("max_respones")) {
-            return config_json["config"]["max_respones"].get<int>();
+        if (config_json.contains("config") && config_json["config"].contains("max_responses")) {
+            return config_json["config"]["max_responses"].get<int>();
+        } else {
+            cerr << "Feild: \"max_responses\" is not found" << endl;
         }
-    } // дописать catch и отловить ошибку в случае если не найдено поле max responses
+    } catch (const json::exception &e) {
+        cerr <<  "JSON parsing error: " << e.what() << endl;
+    }
+
+    return 1;
 }
 
 //Метод получения запросов из файла requests.json
@@ -64,7 +79,7 @@ std::vector<std::string>GetRequests() {
 
 }
 
-//Метод который помещает результаты поиска в answers.json
+//Метод, который помещает результаты поиска в answers.json
 void putAnswers(std::vector<std::vector<std::pair<int,float>>>answers) {
 
 }
