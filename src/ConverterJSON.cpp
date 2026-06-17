@@ -2,7 +2,6 @@
 // Created by kurchin_iu on 15.06.2026.
 //
 
-#include "ConverterJSON.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
