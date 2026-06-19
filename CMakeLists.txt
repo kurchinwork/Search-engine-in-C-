@@ -19,6 +19,7 @@ FetchContent_Declare(
 
 # Для того чтобы устранить ошибку компиляции:
 # can't link... Standard Library mismatch..
+
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(json googletest)

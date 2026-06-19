@@ -22,6 +22,13 @@ public:
 
     //Метод получения запросов из файла requests.json
     std::vector<std::string>GetRequests();
+
+    //Метод вкладки найденного в файл
+    void putAnswers(std::vector<std::vector<std::pair<int, float>>> answers);
+
+    void GetInfoConfig();
+
+
 };
 
 
