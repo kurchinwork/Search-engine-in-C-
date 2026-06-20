@@ -13,7 +13,11 @@ using namespace std;
 //тест для метода GetTextDocuments
 vector<string> GetTextDocuments();
 int GetResponsesLimit();
+
+ConverterJSON converter;
+
 TEST(ConverterJSON_Tests, GetTextDocuments_ValidFile) {
+
 
     //создаю тестовый JSON файл config,json
     //правльный тест
@@ -31,11 +35,15 @@ TEST(ConverterJSON_Tests, GetTextDocuments_ValidFile) {
     })";
     testConfig.close();
 
-    vector<string> expected = {"../resources/file1.txt", "../resources/file2.txt"};
+    vector<string> expected = {
+        "milk sugar coffee\n",
+        "coffee water coffee\n",
+        "aaaaaaaa\n"
+    };
     vector<string> result;
 
     ASSERT_NO_THROW({
-        result = GetTextDocuments();
+        result = converter.GetTextDocuments();
     });
 
     EXPECT_EQ(result, expected);
@@ -53,13 +61,13 @@ TEST(ConverterJSON_Tests, GetResponsesLimit_ValidValue) {
             "max_responses": 5
         },
         "files": [
-            "../resources/file1.txt",
-            "../resources/file2.txt"
+            "../resources/file001.txt",
+            "../resources/file002.txt"
         ]
     })";
     testConfig.close();
 
-    int limit = GetResponsesLimit();
+    int limit = converter.GetResponsesLimit();
 
     EXPECT_EQ(limit, 5);
 
