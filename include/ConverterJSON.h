@@ -26,6 +26,7 @@ public:
     //Метод вкладки найденного в файл
     void putAnswers(std::vector<std::vector<std::pair<int, float>>> answers);
 
+    //метод вывода инфы уже проверенного конфига
     void GetInfoConfig();
 
 

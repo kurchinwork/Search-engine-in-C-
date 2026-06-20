@@ -11,12 +11,10 @@ int main() {
     try {
         ConverterJSON converter;
 
+        cout << "--------Start read config--------" << endl;
         auto documents = converter.GetTextDocuments();
 
-        cout << "--------Start read config--------" << endl;
-        converter.getInfoConfig();
-
-
+        converter.GetInfoConfig();
 
     } catch (const exception& e) {
         cerr << "Error caught in main.cpp" << e.what() << endl;

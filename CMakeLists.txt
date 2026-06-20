@@ -3,6 +3,8 @@ project(SearchEngine)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set(CMAKE_TLS_VERIFY OFF)
+
 include (FetchContent)
 
 #Подключение библиотеки Nlohmann
@@ -19,7 +21,6 @@ FetchContent_Declare(
 
 # Для того чтобы устранить ошибку компиляции:
 # can't link... Standard Library mismatch..
-
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(json googletest)
@@ -31,12 +32,16 @@ include_directories(include)
 add_executable(SearchEngine
         src/main.cpp
         src/ConverterJSON.cpp
+        src/InvertedIndex.cpp
+        include/InvertedIndex.h
 )
 target_link_libraries(SearchEngine PRIVATE nlohmann_json::nlohmann_json)
 
 add_executable(run_tests
         src/tests.cpp
         src/ConverterJSON.cpp
+        src/InvertedIndex.cpp
+        include/InvertedIndex.h
 )
 
 target_link_libraries(run_tests PRIVATE gtest_main nlohmann_json::nlohmann_json)
