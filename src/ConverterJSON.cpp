@@ -117,7 +117,7 @@ int ConverterJSON::GetResponsesLimit() {
         cerr <<  "JSON parsing error: " << e.what() << endl;
     }
 
-    return 1;
+    return 5;
 }
 
 //Метод получения запросов из файла requests.json
