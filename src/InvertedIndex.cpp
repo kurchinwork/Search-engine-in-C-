@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_dosc) {
+void InvertedIndex::UpdateDocumentBase(vector<string> input_dosc) {
     docs.clear();
     freq_dict.clear();
 
@@ -36,7 +36,14 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_dosc) {
     }
 }
 
-std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word) {
+vector<Entry> InvertedIndex::GetWordCount(const string &word) {
 
+    auto it = freq_dict.find(word);
+
+    if (it == freq_dict.end()) {
+        return {};
+    } else {
+        return it->second;
+    }
 }
 

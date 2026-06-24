@@ -34,6 +34,8 @@ add_executable(SearchEngine
         src/ConverterJSON.cpp
         src/InvertedIndex.cpp
         include/InvertedIndex.h
+        src/SearchServer.cpp
+        include/SearchServer.h
 )
 target_link_libraries(SearchEngine PRIVATE nlohmann_json::nlohmann_json)
 
@@ -42,6 +44,8 @@ add_executable(run_tests
         src/ConverterJSON.cpp
         src/InvertedIndex.cpp
         include/InvertedIndex.h
+        src/SearchServer.cpp
+        include/SearchServer.h
 )
 
 target_link_libraries(run_tests PRIVATE gtest_main nlohmann_json::nlohmann_json)
