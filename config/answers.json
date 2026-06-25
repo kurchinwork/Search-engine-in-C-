@@ -1,0 +1,23 @@
+{
+    "answers": {
+        "request001": {
+            "relevance": [
+                {
+                    "doc_id": 1,
+                    "rank": 1.0
+                },
+                {
+                    "doc_id": 0,
+                    "rank": 0.25
+                }
+            ],
+            "result": true
+        },
+        "request002": {
+            "result": false
+        },
+        "request003": {
+            "result": false
+        }
+    }
+}

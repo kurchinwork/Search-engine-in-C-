@@ -122,11 +122,76 @@ int ConverterJSON::GetResponsesLimit() {
 
 //Метод получения запросов из файла requests.json
 vector<string>ConverterJSON::GetRequests() {
-    return {};
+    vector<string> requests;
+
+    ifstream requests_file("..\\config\\requests.json");
+    if (!requests_file.is_open()) {
+        cerr << "\"requests.json\" is not found" << endl;
+        return {};
+    }
+
+    try {
+        json requests_json;
+        requests_file >> requests_json;
+        requests_file.close();
+
+        if (requests_json.contains("requests")) {
+            requests = requests_json["requests"].get<vector<string>>();
+        } else {
+            cerr << "Field \"requests\" is not found in requests.json" << endl;
+
+        }
+    } catch (const json::exception &e) {
+        cerr << "JSON parsing error: " << e.what() << endl;
+    }
+
+    return  requests;
 }
 
 //Метод, который помещает результаты поиска в answers.json
 void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int,float>>>answers) {
+    json output_json;
+    json answers_map = json::object();
+
+    for (size_t i = 0; i < answers.size(); i++) {
+        ostringstream request_name;
+        request_name << "request" << setw(3) << setfill('0') << (i + 1);
+
+        json request_info = json::object();
+
+        if (answers[i].empty()) {
+            request_info["result"] = false;
+        }
+        else if (answers[i].size() == 1) {
+            request_info["result"] = true;
+            request_info["doc_id"] = answers[i][0].first;
+            request_info["rank"] = answers[i][0].second;
+        } else {
+            request_info["result"] = true;
+            json relevance_array = json::array();
+
+            for (const auto& doc_pair : answers[i]) {
+                json doc_info = json::object();
+                doc_info["doc_id"] = doc_pair.first;
+                doc_info["rank"] = doc_pair.second;
+                relevance_array.push_back(doc_info);
+            }
+
+            request_info["relevance"] = relevance_array;
+        }
+
+        answers_map[request_name.str()] = request_info;
+    }
+
+    output_json["answers"] = answers_map;
+
+    ofstream answers_file("..\\config\\answers.json");
+    if (answers_file.is_open()) {
+        answers_file << output_json.dump(4);
+        answers_file.close();
+    } else {
+        cerr << "Error: Could not write to answers.json" << endl;
+    }
 
 }
 
