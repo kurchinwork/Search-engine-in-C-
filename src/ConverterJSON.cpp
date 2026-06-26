@@ -164,7 +164,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int,float>>>ans
         }
         else if (answers[i].size() == 1) {
             request_info["result"] = true;
-            request_info["doc_id"] = answers[i][0].first;
+            request_info["docid"] = answers[i][0].first;
             request_info["rank"] = answers[i][0].second;
         } else {
             request_info["result"] = true;
@@ -172,7 +172,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int,float>>>ans
 
             for (const auto& doc_pair : answers[i]) {
                 json doc_info = json::object();
-                doc_info["doc_id"] = doc_pair.first;
+                doc_info["docid"] = doc_pair.first;
                 doc_info["rank"] = doc_pair.second;
                 relevance_array.push_back(doc_info);
             }
