@@ -17,7 +17,7 @@ vector<string> ConverterJSON::GetTextDocuments() {
 
     vector<string> containFile;
 
-    ifstream JSON_file ("..\\config\\config.json");
+    ifstream JSON_file ("../config/config.json");
 
     if (!JSON_file.is_open()) {
         cerr << "File \"config.json\" is not found" << endl;
@@ -93,7 +93,7 @@ vector<string> ConverterJSON::GetTextDocuments() {
 
 //Метод определения максимального количества ответов на запрос (готов)
 int ConverterJSON::GetResponsesLimit() {
-    ifstream JSON_file ("..\\config\\config.json");
+    ifstream JSON_file ("../config/config.json");
 
     //валидация config.json
     if (!JSON_file.is_open()) {
@@ -124,7 +124,7 @@ int ConverterJSON::GetResponsesLimit() {
 vector<string>ConverterJSON::GetRequests() {
     vector<string> requests;
 
-    ifstream requests_file("..\\config\\requests.json");
+    ifstream requests_file("../config/requests.json");
     if (!requests_file.is_open()) {
         cerr << "\"requests.json\" is not found" << endl;
         return {};
@@ -185,7 +185,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int,float>>>ans
 
     output_json["answers"] = answers_map;
 
-    ofstream answers_file("..\\config\\answers.json");
+    ofstream answers_file("../config/answers.json");
     if (answers_file.is_open()) {
         answers_file << output_json.dump(4);
         answers_file.close();
@@ -196,7 +196,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int,float>>>ans
 }
 
 void ConverterJSON::GetInfoConfig() {
-    ifstream JSON_file ("..\\config\\config.json");
+    ifstream JSON_file ("../config/config.json");
 
     if (!JSON_file.is_open()) {
         cerr << "File \"config.json\" is not found" << endl;
