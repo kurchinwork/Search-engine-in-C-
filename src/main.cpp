@@ -35,7 +35,10 @@ int main() {
 
 
         cout << "\n---Searching in process---" << endl;
-        SearchServer search_server(index);
+
+        int responses_limit = converter.GetResponsesLimit();
+        SearchServer search_server (index, responses_limit);
+
         auto searchResult = search_server.search(requests);
 
         vector<vector<pair<int, float>>> finalAnswers;

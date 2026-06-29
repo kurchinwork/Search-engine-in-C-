@@ -10,6 +10,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <mutex>
+#include <thread>
 
 //стркутура хранения информации вхождения слова
 struct Entry {
@@ -37,7 +39,7 @@ private:
     //словарь частот слов
     std::map<std::string, std::vector<Entry>> freq_dict;
 
+    std::mutex dict_mutex;
 };
-
 
 #endif //SEARCHENGINE_INVERTEDINDEX_H

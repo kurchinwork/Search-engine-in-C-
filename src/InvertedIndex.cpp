@@ -13,25 +13,34 @@ void InvertedIndex::UpdateDocumentBase(vector<string> input_dosc) {
 
     docs = input_dosc;
 
+    vector<thread> threads;
+
     for (size_t doc_id = 0; doc_id < docs.size(); doc_id++) {
-        string text = docs[doc_id];
-        stringstream ss(text);
+        threads.push_back(thread([this, doc_id] () {
+            string text = docs[doc_id];
+            stringstream ss(text);
+            string word;
 
-        string word;
+            map<string, size_t> local_bag_of_words;
+            while (ss >> word) {
+                local_bag_of_words[word]++;
+            }
 
-        while (ss >> word) {
-            auto& entries = freq_dict[word];
-
-            if (!entries.empty() && entries.back().doc_id == doc_id) {
-                entries.back().count++;
-            } else {
+            lock_guard<mutex> lock(dict_mutex);
+            for (const auto& [local_word, count] : local_bag_of_words) {
                 Entry entry;
 
                 entry.doc_id = doc_id;
-                entry.count = 1;
+                entry.count = count;
 
-                entries.push_back(entry);
+                freq_dict[local_word].push_back(entry);
             }
+        }));
+    }
+
+    for (auto& th : threads) {
+        if (th.joinable()) {
+            th.join();
         }
     }
 }

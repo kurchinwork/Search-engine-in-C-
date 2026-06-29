@@ -9,7 +9,7 @@
 
 #include <vector>
 #include <string>
-#include <utility>
+#include <map>
 
 #include "InvertedIndex.h"
 
@@ -25,8 +25,9 @@ struct RelativeIndex {
 class SearchServer {
 private:
     InvertedIndex& _index;
+    int _responses_limit;
 public:
-    SearchServer(InvertedIndex& idx) : _index(idx) { };
+    SearchServer(InvertedIndex& idx, int responses_limit) : _index(idx), _responses_limit(responses_limit) { };
 
     std::vector<std::vector<RelativeIndex>> search(const std::vector<std::string>& queries_input);
 

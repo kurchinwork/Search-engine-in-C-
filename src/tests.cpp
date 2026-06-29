@@ -168,7 +168,7 @@ TEST(TestCaseSearchServer, TestSimple) {
     InvertedIndex idx;
     idx.UpdateDocumentBase(docs);
 
-    SearchServer srv(idx);
+    SearchServer srv(idx, 5);
     std::vector<std::vector<RelativeIndex>> result = srv.search(requests);
 
     ASSERT_EQ(result.size(), expected.size());
@@ -177,6 +177,43 @@ TEST(TestCaseSearchServer, TestSimple) {
         for (size_t j = 0; j < result[i].size(); ++j) {
             EXPECT_EQ(result[i][j].doc_id, expected[i][j].doc_id);
             // Так как float может иметь погрешность, проверяем через проверку близости значений
+            EXPECT_NEAR(result[i][j].rank, expected[i][j].rank, 0.001f);
+        }
+    }
+}
+
+TEST(TestCaseSearchServer, TestAdvanced) {
+    const std::vector<std::string> docs = {
+        "milk milk milk milk water water world",
+        "milk water water",
+        "milk milk milk milk milk water water water water water",
+        "americano cappuccino mocha"
+    };
+
+    // Запрос из нескольких слов
+    // Запрос с несуществующим словом
+    const std::vector<std::string> requests = {"milk water", "sugar"};
+
+    const std::vector<std::vector<RelativeIndex>> expected = {
+        {
+            {2, 1.0f}, {0, 0.6f} // Документ 1 отсечен лимитом
+        },
+        {
+            // Для "sugar" ожидается пустой результат
+        }
+    };
+
+    InvertedIndex idx;
+    idx.UpdateDocumentBase(docs);
+
+    SearchServer srv(idx, 2);
+    std::vector<std::vector<RelativeIndex>> result = srv.search(requests);
+
+    ASSERT_EQ(result.size(), expected.size());
+    for (size_t i = 0; i < result.size(); ++i) {
+        ASSERT_EQ(result[i].size(), expected[i].size());
+        for (size_t j = 0; j < result[i].size(); ++j) {
+            EXPECT_EQ(result[i][j].doc_id, expected[i][j].doc_id);
             EXPECT_NEAR(result[i][j].rank, expected[i][j].rank, 0.001f);
         }
     }

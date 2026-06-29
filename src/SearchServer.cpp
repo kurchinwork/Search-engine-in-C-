@@ -9,83 +9,81 @@
 #include <algorithm>
 
 #include "../include/SearchServer.h"
-#include "../include/ConverterJSON.h"
 
 
 using namespace std;
 
 vector<vector<RelativeIndex>> SearchServer::search(const vector<string>& queries_input) {
-
     vector<vector<RelativeIndex>> result;
 
     for (int i = 0; queries_input.size() > i; i++) {
 
         set<string> unique_wrods;
-
         string word;
-        string query = queries_input[i];
-        stringstream ss(query);
+        stringstream ss(queries_input[i]);
 
         while (ss >> word) {
             unique_wrods.insert(word);
         }
 
-        vector<string> words_vector (unique_wrods.begin(), unique_wrods.end());
-        sort(words_vector.begin(), words_vector.end(), [this] (const string& a, const string& b) {
-            return _index.GetWordCount(a).size() < _index.GetWordCount(b).size();
-        });
-
-        map<size_t, size_t> absoluteRelevance;
-
-        for (const auto& w : words_vector) {
-            auto entries = _index.GetWordCount(w);
-            for (const auto& entry : entries) {
-                absoluteRelevance[entry.doc_id] += entry.count;
-            }
-        }
-
-        if (absoluteRelevance.empty()) {
+        if (unique_wrods.empty()) {
             result.push_back({});
             continue;
         }
 
-        size_t max_ra = 0;
-        for (const auto& pair : absoluteRelevance) {
-            if (pair.second > max_ra) {
-                max_ra = pair.second;
+        map<size_t, size_t> AbsoluteRelevance;
+        map<size_t, size_t> words_count_in_doc;
+
+        for (const auto& w:unique_wrods) {
+            auto entries = _index.GetWordCount(w);
+            for (const auto& entry : entries) {
+                AbsoluteRelevance[entry.doc_id]  += entry.count;
+                words_count_in_doc[entry.doc_id]++;
             }
         }
 
         vector<RelativeIndex> current_query_result;
-        //рассчет относительной релевантности
-        for (const auto& pair : absoluteRelevance) {
-            RelativeIndex rel_idx;
-            rel_idx.doc_id = pair.first;
+        size_t max_ra = 0;
 
-            rel_idx.rank = (float)pair.second / max_ra;
+        for (const auto& [doc_id, total_count] : AbsoluteRelevance) {
+            if (words_count_in_doc[doc_id] == unique_wrods.size()) {
+                RelativeIndex rel_idx;
+                rel_idx.doc_id = doc_id;
 
-            current_query_result.push_back(rel_idx);
+                rel_idx.rank = static_cast<float>(total_count);
+                current_query_result.push_back(rel_idx);
+
+                if (total_count > max_ra) {
+                    max_ra = total_count;
+                }
+            }
         }
 
-        sort(current_query_result.begin(), current_query_result.end(), [](const RelativeIndex &a, const RelativeIndex &b) {
-            if (a.rank != b.rank) {
+        if (current_query_result.empty()) {
+            result.push_back({});
+            continue;
+        }
+
+        //расчет относительной релевантности
+        for (auto& item : current_query_result) {
+            item.rank = item.rank / max_ra;
+        }
+
+        //сортировка по убыванию rank, при равенстве то по возрастанию doc_id
+        sort(current_query_result.begin(), current_query_result.end(), [](const RelativeIndex& a, const RelativeIndex& b) {
+            if (abs(a.rank - b.rank) > 1e-5f) {
                 return a.rank > b.rank;
             }
-
             return a.doc_id < b.doc_id;
         });
 
-        ConverterJSON converter;
-        int max_responses = converter.GetResponsesLimit();
-
-        if (current_query_result.size() > max_responses) {
-            current_query_result.resize(max_responses);
+        if (current_query_result.size() > static_cast<size_t>(_responses_limit)) {
+            current_query_result.resize(_responses_limit);
         }
 
         result.push_back(current_query_result);
     }
 
-
-
     return result;
+
 }
